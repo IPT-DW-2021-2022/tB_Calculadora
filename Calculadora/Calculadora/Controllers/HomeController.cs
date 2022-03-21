@@ -60,6 +60,19 @@ namespace Calculadora.Controllers {
 
                break;
 
+
+            case "+":
+            case "-":
+            case "x":
+            case ":":
+               // foi pressionado um 'operador'
+
+
+
+
+               break;
+
+
          }
 
          // preparar os dados a serem enviados para a View
