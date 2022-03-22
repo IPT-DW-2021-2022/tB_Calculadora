@@ -12,7 +12,10 @@ namespace Calculadora.Controllers {
          _logger = logger;
       }
 
-
+      /// <summary>
+      /// preparar a view com a calculadora, durante a primeira iteração
+      /// </summary>
+      /// <returns></returns>
       [HttpGet] // esta anotação não seria necessária,
                 // pq por predefinição os pedidos HTTP são GET
       public IActionResult Index() {
@@ -23,9 +26,23 @@ namespace Calculadora.Controllers {
          return View();
       }
 
-
+      /// <summary>
+      /// processa a interação com a calculadora
+      /// </summary>
+      /// <param name="botao">valor do botão selecionado pelo utilizador</param>
+      /// <param name="visor">valor existente no Visor da claculadora</param>
+      /// <param name="primeiroOperando">valor a ser utilizado na operação algébrica</param>
+      /// <param name="operador">operador a ser utilizado na operação</param>
+      /// <param name="limpaEcra">'flag' a indicar se se deve, ou não, limpar o ecrã</param>
+      /// <returns></returns>
       [HttpPost]
-      public IActionResult Index(string botao, string visor) {
+      public IActionResult Index(
+         string botao,
+         string visor,
+         string primeiroOperando,
+         string operador,
+         string limpaEcra
+         ) {
 
          // vamos decidir o q fazer com o valor do 'botao'
          switch (botao) {
@@ -40,9 +57,9 @@ namespace Calculadora.Controllers {
             case "9":
             case "0":
                // o utilizador pressionou um algarismo
-               if (visor == "0") { visor = botao; }
+               if (limpaEcra == "sim" || visor == "0") { visor = botao; }
                else { visor = visor + botao; }
-
+               limpaEcra = "nao";
                break;
 
             case ",":
@@ -60,16 +77,37 @@ namespace Calculadora.Controllers {
 
                break;
 
-
             case "+":
             case "-":
             case "x":
             case ":":
                // foi pressionado um 'operador'
 
+               if (!string.IsNullOrEmpty(operador)) {
+                  // NÃO é a primeira vez q se executa o código
 
+                  // vamos executar a operação
+                  double operandoUm = Convert.ToDouble(primeiroOperando);
+                  double operandoDois = Convert.ToDouble(visor.Replace(',','.'));
 
-
+                  switch (operador) {
+                     case "+":
+                        visor = operandoUm + operandoDois + "";
+                        break;
+                     case "-":
+                        visor = operandoUm - operandoDois + "";
+                        break;
+                     case "x":
+                        visor = operandoUm * operandoDois + "";
+                        break;
+                     case ":":
+                        visor = operandoUm / operandoDois + "";
+                        break;
+                  }
+               }
+               primeiroOperando = visor;
+               operador = botao;
+               limpaEcra = "sim";
                break;
 
 
@@ -77,6 +115,9 @@ namespace Calculadora.Controllers {
 
          // preparar os dados a serem enviados para a View
          ViewBag.Visor = visor;
+         ViewBag.PrimeiroOperando = primeiroOperando;
+         ViewBag.Operador = operador;
+         ViewBag.LimpaEcra = limpaEcra;
 
          return View();
       }

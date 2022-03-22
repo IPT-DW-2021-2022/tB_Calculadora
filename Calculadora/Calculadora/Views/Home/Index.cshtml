@@ -8,9 +8,11 @@
 </div>
 
 <form method="post">
-
-    <input type="hidden" name="PrimeiroOperando" value="" />
-    <input type="hidden" name="Operador" value="" />
+    <!-- esta linha de comentário (HTML) vai ser vista no browser -->
+    @*  mas, esta já não será exportada para o browser...  *@
+    <input type="hidden" name="primeiroOperando" value="@ViewBag.PrimeiroOperando" />
+    <input type="hidden" name="operador" value="@ViewBag.Operador" />
+    <input type="hidden" name="limpaEcra" value="@ViewBag.LimpaEcra" />
 
 
   <table border="0"
